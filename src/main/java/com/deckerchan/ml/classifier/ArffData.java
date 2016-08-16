@@ -6,7 +6,7 @@
 
 package com.deckerchan.ml.classifier;
 
-import com.deckerchan.ml.util.*;
+import com.deckerchan.ml.util.Permutation;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,10 +25,10 @@ public class ArffData {
 
     public String _filename = null;
     public String _relation = null;
-    public ArrayList<Attribute> _attr = new ArrayList<Attribute>();
-    public ArrayList<DataEntry> _data = new ArrayList<DataEntry>();
+    public ArrayList<Attribute> _attr = new ArrayList<>();
+    public ArrayList<DataEntry> _data = new ArrayList<>();
 
-    public HashMap<String, Attribute> _attrMap = new HashMap<String, Attribute>();
+    public HashMap<String, Attribute> _attrMap = new HashMap<>();
 
     public ArffData() {
     }
@@ -46,7 +46,7 @@ public class ArffData {
     }
 
     public static String[] SplitRespectQuotes(String line, String split_chars) {
-        ArrayList<String> ret = new ArrayList<String>();
+        ArrayList<String> ret = new ArrayList<>();
         boolean inside_quotes = false;
         StringBuffer cur_entry = new StringBuffer();
         for (int index = 0; index < line.length(); index++) {
@@ -74,7 +74,7 @@ public class ArffData {
     }
 
     public static String StripBraces(String in) {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         for (int i = 0; i < in.length(); i++) {
             char c = in.charAt(i);
             if (c != '{' && c != '}')
@@ -84,7 +84,7 @@ public class ArffData {
     }
 
     public static String StripQuotes(String in) {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         for (int i = 0; i < in.length(); i++) {
             char c = in.charAt(i);
             if (c != '\'' && c != '`' && c != '\"' && c != '{' && c != '}' && c != ',')
@@ -163,7 +163,7 @@ public class ArffData {
             type = TYPE_DOUBLE;
         else if (split[2].equalsIgnoreCase("integer"))
             type = TYPE_INT;
-        else if (split[2].indexOf("{") >= 0)
+        else if (split[2].contains("{"))
             type = TYPE_CLASS;
 
         Attribute a = addAttribute(split[1], type);
@@ -228,13 +228,13 @@ public class ArffData {
         d.initializeDefaults();
 
         // Set sparse entries
-        for (int i = 0; i < split.length; i++) {
-            String entry = split[i].trim();
+        for (String aSplit : split) {
+            String entry = aSplit.trim();
             int first_char = entry.indexOf(' ');
             String index = entry.substring(0, first_char).trim();
             String value = StripQuotes(entry.substring(first_char).trim());
             //System.out.println(index + " : " + value);
-            d.setData(new Integer(index).intValue(), value);
+            d.setData(new Integer(index), value);
         }
 
         _data.add(d);
@@ -244,14 +244,14 @@ public class ArffData {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Relation: " + _relation + "\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Relation: ").append(_relation).append("\n");
         sb.append("\nAttributes:\n");
         for (int i = 0; i < _attr.size(); i++)
-            sb.append("[" + i + "] " + _attr.get(i) + "\n");
+            sb.append("[").append(i).append("] ").append(_attr.get(i)).append("\n");
         sb.append("\nData:\n");
         for (int i = 0; i < _data.size(); i++)
-            sb.append("[" + i + "] " + _data.get(i) + "\n");
+            sb.append("[").append(i).append("] ").append(_data.get(i)).append("\n");
         return sb.toString();
     }
 
@@ -262,8 +262,8 @@ public class ArffData {
         s._test = new ArffData(this);
 
         int[] perm = Permutation.permute(_data.size());
-        s._train._data = new ArrayList<DataEntry>();
-        s._test._data = new ArrayList<DataEntry>();
+        s._train._data = new ArrayList<>();
+        s._test._data = new ArrayList<>();
 
         int split_point = (int) Math.round(train_percent * _data.size());
         for (int i = 0; i < _data.size(); i++) {
@@ -287,16 +287,16 @@ public class ArffData {
         public int type = TYPE_UNKNOWN;
         public int max_val = 0;
         public int my_index = 0;
-        public ArrayList class_vals = null; // Only used if a class
-        public HashMap class_id_map = null; // Only used if a class
+        public ArrayList<String> class_vals = null; // Only used if a class
+        public HashMap<String, Integer> class_id_map = null; // Only used if a class
 
         public Attribute(String a_name, int a_type, int a_index) {
             name = a_name;
             type = a_type;
             my_index = a_index;
             if (a_type == TYPE_CLASS) {
-                class_vals = new ArrayList();
-                class_id_map = new HashMap();
+                class_vals = new ArrayList<>();
+                class_id_map = new HashMap<>();
                 max_val = 0;
             }
         }
@@ -310,19 +310,19 @@ public class ArffData {
         }
 
         public String getClassName(int id) {
-            return (String) class_vals.get(id);
+            return class_vals.get(id);
         }
 
         public Integer getClassId(String name) {
-            return (Integer) class_id_map.get(name);
+            return class_id_map.get(name);
         }
 
         public String toString() {
-            StringBuffer sb = new StringBuffer();
-            sb.append(name + " : ");
+            StringBuilder sb = new StringBuilder();
+            sb.append(name).append(" : ");
             switch (type) {
                 case TYPE_CLASS:
-                    sb.append("CLASS " + class_vals);
+                    sb.append("CLASS ").append(class_vals);
                     break;
                 case TYPE_INT:
                     sb.append("INTEGER");
@@ -338,8 +338,8 @@ public class ArffData {
         }
 
         public String toFileString() {
-            StringBuffer sb = new StringBuffer();
-            sb.append("@attribute\t" + name + "\t");
+            StringBuilder sb = new StringBuilder();
+            sb.append("@attribute\t").append(name).append("\t");
             switch (type) {
                 case TYPE_CLASS:
                     sb.append(" { ");
@@ -357,7 +357,7 @@ public class ArffData {
 
             if (type == TYPE_CLASS) {
                 for (int i = 0; i < class_vals.size() - 1; i++)
-                    sb.append("'" + class_vals.get(i) + "'\t");
+                    sb.append("'").append(class_vals.get(i)).append("'\t");
                 sb.append(" }");
             }
 
@@ -367,14 +367,14 @@ public class ArffData {
 
     public class DataEntry {
         // These are either Integers or Doubles
-        ArrayList _entries = null;
+        ArrayList<Number> _entries = null;
 
         public DataEntry() {
             this(_attr.size());
         }
 
         public DataEntry(int initial_size) {
-            _entries = new ArrayList(initial_size);
+            _entries = new ArrayList<>(initial_size);
         }
 
         public void initializeDefaults() {
@@ -382,9 +382,9 @@ public class ArffData {
             for (int i = 0; i < _attr.size(); i++) {
                 Attribute a = _attr.get(i);
                 if (a.type == TYPE_CLASS || a.type == TYPE_INT)
-                    _entries.add(new Integer(0));
+                    _entries.add(0);
                 else
-                    _entries.add(new Double(0d));
+                    _entries.add(0d);
             }
         }
 
@@ -418,7 +418,7 @@ public class ArffData {
                     Integer class_id = _attr.get(index).getClassId(entry);
                     if (class_id == null) {
                         System.out.println("setData: attibute " + index + " -> class name " + entry);
-                        System.out.println("class_id for class name not found: " + class_id);
+                        System.out.println("class_id for class name not found!");
                         System.out.println("the options were: " + _attr.get(index).class_vals);
                         try {
                             throw new Exception();
@@ -443,7 +443,7 @@ public class ArffData {
             //System.out.println("getData, index " + Integer.toString(index) + " entries size " + Integer.toString(_entries.size()));
 
 			/*for (int ind = 0; ind < _entries.size(); ind++) {
-				Object o = _entries.get(index);
+                Object o = _entries.get(index);
 				if (ind > 0)
 						System.out.println(o.toString());
 				if (ind == index)
@@ -455,14 +455,14 @@ public class ArffData {
         }
 
         public String toString() {
-            StringBuffer sb = new StringBuffer("[");
+            StringBuilder sb = new StringBuilder("[");
             for (int index = 0; index < _entries.size(); index++) {
                 Object o = _entries.get(index);
                 if (index > 0)
                     sb.append(", ");
                 if (_attr.get(index).type == TYPE_CLASS) {
                     int id = Integer.parseInt(o.toString());
-                    sb.append(_attr.get(index).getClassName(id) + ":" + id);
+                    sb.append(_attr.get(index).getClassName(id)).append(":").append(id);
                 } else
                     sb.append(o.toString());
 

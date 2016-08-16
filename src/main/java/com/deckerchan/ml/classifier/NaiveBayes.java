@@ -66,8 +66,8 @@ public class NaiveBayes {
         StringBuffer sb = new StringBuffer("\nNaive Bayes CPTs [" + _condProb.size() + "]:\n\n");
         for (int i = 0; i < _condProb.size(); i++) {
             ClassCondProb ccp = _condProb.get(i);
-            sb.append("Attribute: " + _arffData._attr.get(i).name + "\n");
-            sb.append(ccp.toString() + "\n");
+            sb.append("Attribute: ").append(_arffData._attr.get(i).name).append("\n");
+            sb.append(ccp.toString()).append("\n");
         }
         return sb.toString();
     }
@@ -189,7 +189,7 @@ public class NaiveBayes {
                     class_value += ccp._logprob[i][0];
                 } else {
                     //System.out.print(((Integer)de.getData(j)).intValue() + " ");
-                    class_value += ccp._logprob[((Integer) de.getData(j)).intValue()][i];
+                    class_value += ccp._logprob[(Integer) de.getData(j)][i];
                 }
             }
 
@@ -208,7 +208,7 @@ public class NaiveBayes {
         int correct = 0;
         for (ArffData.DataEntry de : data) {
             int pred = evaluate(de); // Evaluate returns sorted results
-            int actual = ((Integer) de.getData(_classIndex)).intValue();
+            int actual = (Integer) de.getData(_classIndex);
             if (pred == actual) correct++;
             //System.out.println(/*de + " :: " +*/ pred + " == " + actual);
         }
@@ -230,14 +230,12 @@ public class NaiveBayes {
             ArffData.Attribute ca = _arffData._attr.get(_classIndex);
             if (_attr_index == _classIndex) {
                 for (int cv = 0; cv < ca.class_vals.size(); cv++) {
-                    sb.append("P( " + ca.name + " = " + ca.getClassName(cv) + " ) = " +
-                            _df.format(Math.exp(_logprob[cv][0])) + "\n");
+                    sb.append("P( ").append(ca.name).append(" = ").append(ca.getClassName(cv)).append(" ) = ").append(_df.format(Math.exp(_logprob[cv][0]))).append("\n");
                 }
             } else {
                 for (int cv = 0; cv < ca.class_vals.size(); cv++) {
                     for (int av = 0; av < a.class_vals.size(); av++) {
-                        sb.append("P( " + a.name + " = " + a.getClassName(av) + " | " + ca.name + " = " + ca.getClassName(cv) +
-                                " ) = " + _df.format(Math.exp(_logprob[av][cv])) + "\n");
+                        sb.append("P( ").append(a.name).append(" = ").append(a.getClassName(av)).append(" | ").append(ca.name).append(" = ").append(ca.getClassName(cv)).append(" ) = ").append(_df.format(Math.exp(_logprob[av][cv]))).append("\n");
                     }
                 }
             }
