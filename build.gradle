@@ -1,0 +1,22 @@
+group 'com.deckerchan'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'com.deckerchan.ml.EntryPoint'
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile files('lib/snowball_stemmer.jar')
+
+}
+
+
+
