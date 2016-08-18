@@ -1,4 +1,4 @@
-package com.deckerchan.ml.nlp.nicta.filters;
+package edu.anu.csit.ml.filters;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

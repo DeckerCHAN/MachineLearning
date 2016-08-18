@@ -15,7 +15,7 @@
  *
  *************************************************************************/
 
-package com.deckerchan.ml.util;
+package edu.anu.csit.ml.util;
 
 public class Permutation {
 

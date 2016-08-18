@@ -1,4 +1,4 @@
-package com.deckerchan.ml.nlp.nicta.filters;
+package edu.anu.csit.ml.filters;
 
 import org.tartarus.snowball.ext.englishStemmer;
 

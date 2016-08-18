@@ -1,4 +1,4 @@
-package com.deckerchan.ml.util;
+package edu.anu.csit.ml.util;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.deckerchan.ml.nlp.nicta.filters;
+package edu.anu.csit.ml.filters;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;

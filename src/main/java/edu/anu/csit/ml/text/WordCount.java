@@ -1,4 +1,4 @@
-package com.deckerchan.ml.text;
+package edu.anu.csit.ml.text;
 
 public class WordCount implements Comparable {
     public String _word;

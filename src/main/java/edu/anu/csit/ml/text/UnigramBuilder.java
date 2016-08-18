@@ -4,11 +4,11 @@
  * @author Scott Sanner
  */
 
-package com.deckerchan.ml.text;
+package edu.anu.csit.ml.text;
 
-import com.deckerchan.ml.nlp.nicta.filters.StopWordChecker;
-import com.deckerchan.ml.util.DocUtils;
-import com.deckerchan.ml.util.FileFinder;
+import edu.anu.csit.ml.filters.StopWordChecker;
+import edu.anu.csit.ml.util.DocUtils;
+import edu.anu.csit.ml.util.FileFinder;
 
 import java.io.File;
 import java.util.ArrayList;

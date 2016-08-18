@@ -5,9 +5,9 @@
  * @author Scott Sanner (ssanner@gmail.com)
  */
 
-package com.deckerchan.ml.util;
+package edu.anu.csit.ml.util;
 
-import com.deckerchan.ml.nlp.nicta.filters.SimpleTokenizer;
+import edu.anu.csit.ml.filters.SimpleTokenizer;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -4,9 +4,9 @@
  * @author Scott Sanner (ssanner@gmail.com)
  */
 
-package com.deckerchan.ml.classifier;
+package edu.anu.csit.ml.classifier;
 
-import com.deckerchan.ml.util.Permutation;
+import edu.anu.csit.ml.util.Permutation;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
