@@ -1,4 +1,4 @@
-package com.deckerchan.ml.cluster.entities;
+package com.deckerchan.ml.classfier.entities;
 
 public final class Dimension {
 

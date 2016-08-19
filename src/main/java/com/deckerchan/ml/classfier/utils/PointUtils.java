@@ -1,7 +1,7 @@
-package com.deckerchan.ml.cluster.utils;
+package com.deckerchan.ml.classfier.utils;
 
-import com.deckerchan.ml.cluster.entities.Dimension;
-import com.deckerchan.ml.cluster.entities.HyperDimensionPoint;
+import com.deckerchan.ml.classfier.entities.Dimension;
+import com.deckerchan.ml.classfier.entities.HyperDimensionPoint;
 
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class PointUtils {
         for (Dimension dimension : keys) {
             Double currentDimensionValueA = mapA.get(dimension);
             Double currentDimensionValueB = mapB.get(dimension);
-            sum += Math.pow((currentDimensionValueB - currentDimensionValueA) * ((double) dimension.geteight() / sumWeight), 2);
+            sum += Math.pow((currentDimensionValueB - currentDimensionValueA), 2) * ((double) dimension.getWeight() / sumWeight);
         }
 
         return Math.sqrt(sum);

@@ -1,6 +1,6 @@
-package com.deckerchan.ml.cluster.entities;
+package com.deckerchan.ml.classfier.entities;
 
-import com.deckerchan.ml.cluster.utils.PointUtils;
+import com.deckerchan.ml.classfier.utils.PointUtils;
 
 import java.util.Map;
 
