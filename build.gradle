@@ -14,7 +14,11 @@ mainClassName = 'com.deckerchan.ml.EntryPoint'
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile files('lib/snowball_stemmer.jar')
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compile group: 'org.apache.lucene', name: 'lucene-analyzers', version: '3.6.2'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+
 
 }
 
