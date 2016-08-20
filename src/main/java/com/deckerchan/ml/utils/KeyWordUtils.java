@@ -1,4 +1,4 @@
-package com.deckerchan.ml.classfier.utils;
+package com.deckerchan.ml.utils;
 
 import java.util.Arrays;
 import java.util.HashSet;

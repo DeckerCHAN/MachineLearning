@@ -6,4 +6,9 @@ public class PureTextDocument extends Document {
     public PureTextDocument(Path filePath) {
         super(filePath);
     }
+
+    @Override
+    public void resolveDocument() {
+        
+    }
 }

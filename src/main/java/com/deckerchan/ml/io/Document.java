@@ -1,44 +1,53 @@
 package com.deckerchan.ml.io;
 
+import com.deckerchan.ml.classifier.entities.WordFrequencyTable;
+import org.apache.commons.lang3.StringUtils;
 import org.tartarus.snowball.ext.PorterStemmer;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Hashtable;
-import java.util.Map;
 
 public abstract class Document {
 
+    private String documentText;
+    private String title;
     private String content;
+    private WordFrequencyTable wordFrequencyTable;
+    private Path filePath;
 
-    public String getContent() {
-        try{
-            if (this.content == null) {
-                StringBuilder stringBuilder = new StringBuilder();
-                try (BufferedReader br = new BufferedReader(new FileReader(this.getFilePath().toFile()))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        stringBuilder.append(line);
-                    }
-                }
-                this.content = stringBuilder.toString();
-            }
-            return this.content;
-        }catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
+    public Document(Path filePath) {
+        this.wordFrequencyTable = new WordFrequencyTable();
+        this.filePath = filePath;
 
     }
 
+    public String getTitle() {
+        return title;
+    }
 
-    private Hashtable<String, Long> wordFrequencyTable;
+    protected void setTitle(String title) {
+        this.title = title;
+    }
 
-    public Document(Path filePath) {
-        this.wordFrequencyTable = new Hashtable<>();
-        this.filePath = filePath;
+    public String getContent() {
+        return content;
+    }
+
+    protected void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getDocumentText() {
+        try {
+            if (this.documentText == null) {
+                byte[] encoded = Files.readAllBytes(this.getFilePath());
+                this.documentText = new String(encoded, Charset.defaultCharset());
+            }
+            return this.documentText;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
 
     }
 
@@ -46,37 +55,47 @@ public abstract class Document {
         return filePath;
     }
 
-    private Path filePath;
-
-
     public String getFileName() {
         return this.filePath.getFileName().toString();
     }
 
-    public Map<String, Long> getWordFrequencyTable() throws IOException {
+    public WordFrequencyTable getWordFrequencyTable() {
         if (this.wordFrequencyTable == null) {
             this.calculateWordFrequencyTable();
         }
         return this.wordFrequencyTable;
     }
 
+    public abstract void resolveDocument();
+
+
     public void calculateWordFrequencyTable() {
         try {
+            this.resolveDocument();
+
             PorterStemmer stemmer = new PorterStemmer();
-            this.wordFrequencyTable = new Hashtable<>();
+            this.wordFrequencyTable = new WordFrequencyTable();
 
             String[] words = this.getContent().split("[\\p{Punct}\\s]+");
 
             for (String word : words) {
+
+                word = word.toLowerCase();
+
+                word = word.replaceAll("[^A-Za-z]", "");
+                if (StringUtils.isBlank(word) || StringUtils.isEmpty(word)) {
+                    continue;
+                }
+
+                if (org.apache.lucene.analysis.en.EnglishAnalyzer.getDefaultStopSet().contains(word)) {
+                    continue;
+                }
+
                 stemmer.setCurrent(word);
                 stemmer.stem();
-                String stemWord = stemmer.getCurrent();
+                String stemedWord = stemmer.getCurrent();
 
-                if (this.wordFrequencyTable.contains(stemWord)) {
-                    this.wordFrequencyTable.put(stemWord, this.wordFrequencyTable.get(stemWord) + 1);
-                } else {
-                    this.wordFrequencyTable.put(stemWord, 1L);
-                }
+                this.wordFrequencyTable.occure(stemedWord);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -85,5 +104,8 @@ public abstract class Document {
 
     }
 
-
+    @Override
+    public String toString() {
+        return this.getTitle();
+    }
 }

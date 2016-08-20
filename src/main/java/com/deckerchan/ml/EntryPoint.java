@@ -1,40 +1,61 @@
 package com.deckerchan.ml;
 
-import com.deckerchan.ml.classfier.entities.Dimension;
-import com.deckerchan.ml.classfier.entities.DimensionValueMap;
-import com.deckerchan.ml.classfier.entities.HyperDimensionPoint;
-import com.deckerchan.ml.io.Document;
+import com.deckerchan.ml.classifier.entities.Dimension;
+import com.deckerchan.ml.classifier.entities.DimensionValueMap;
+import com.deckerchan.ml.classifier.entities.HyperDimensionPoint;
+import com.deckerchan.ml.classifier.entities.WordFrequencyTable;
+import com.deckerchan.ml.io.EmailFormatDocument;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.lang.System.out;
 
 public class EntryPoint {
     public static void main(String[] args) throws Exception {
 
 
-       Stream<Document> textFiles =  Files
-               .walk(Paths.get("../data/two_newsgroups"))
-               .filter(Files::isRegularFile)
-               .map(Document::new);
-        textFiles.forEach(Document::calculateWordFrequencyTable);
+        ArrayList<EmailFormatDocument> documents = Files
+                .walk(Paths.get("../data/two_newsgroups"))
+                .filter(Files::isRegularFile)
+                .map(EmailFormatDocument::new).collect(Collectors.toCollection(ArrayList<EmailFormatDocument>::new));
+
+        documents.parallelStream().forEach(EmailFormatDocument::calculateWordFrequencyTable);
+
+        //Get total word frequency table
+
+        WordFrequencyTable totalTable = documents.stream()
+                .map(EmailFormatDocument::getWordFrequencyTable)
+                .reduce(new WordFrequencyTable(), WordFrequencyTable::mergeTable);
 
 
+        List<Dimension> dimensionList = totalTable
+                .entrySet().parallelStream()
+                .map(stringLongEntry -> new Dimension(stringLongEntry.getKey(), 1))
+                .collect(Collectors.toList());
 
 
-        Dimension x = new Dimension("x");
-        Dimension y = new Dimension("y");
+        List<HyperDimensionPoint<EmailFormatDocument>> documentPoints = documents.parallelStream()
+                .map(emailFormatDocument -> {
+                    DimensionValueMap initialDimensionMap = new DimensionValueMap(dimensionList);
 
-        DimensionValueMap m1p = new DimensionValueMap();
-        m1p.put(x,2.0);
-        m1p.put(y,4.9);
-        HyperDimensionPoint p1 = new HyperDimensionPoint(m1p);
+                    emailFormatDocument.getWordFrequencyTable()
+                            .entrySet().stream()
+                            .forEach(wordFrequencyEntry ->
+                                    initialDimensionMap.entrySet().stream()
+                                            .filter(dimensionValueEntry ->
+                                                    dimensionValueEntry.getKey().getDimensionName().equals(wordFrequencyEntry.getKey()))
+                                            .forEach(dimensionDoubleEntry -> dimensionDoubleEntry.setValue(wordFrequencyEntry.getValue())));
+                    out.printf("Finish build hyper point for document %s%n", emailFormatDocument.getFileName());
+                    return new HyperDimensionPoint<>(emailFormatDocument, initialDimensionMap);
+                })
+                .collect(Collectors.toList());
 
-        DimensionValueMap m2p = new DimensionValueMap();
-        m1p.put(x,3.0);
-        m1p.put(y,7.9);
-        HyperDimensionPoint p2 = new HyperDimensionPoint(m2p);
 
+        System.exit(0);
 
 
     }
