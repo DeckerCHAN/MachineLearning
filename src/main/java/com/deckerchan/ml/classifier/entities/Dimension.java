@@ -12,6 +12,9 @@ public final class Dimension {
 
     public Dimension(String dimensionName, double weight) {
         this(dimensionName);
+        if (weight > 1) {
+            throw new RuntimeException("weight can not greater than 1!");
+        }
         this.weight = weight;
     }
 

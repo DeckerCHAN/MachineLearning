@@ -3,6 +3,7 @@ package com.deckerchan.ml.classifier.utils;
 import com.deckerchan.ml.classifier.entities.Dimension;
 import com.deckerchan.ml.classifier.entities.HyperDimensionPoint;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,15 +20,19 @@ public class PointUtils {
 
         double sum = 0D;
 
-        double sumWeight = keys.stream().mapToDouble(Dimension::getWeight).sum();
 
         for (Dimension dimension : keys) {
             long currentDimensionValueA = mapA.get(dimension);
             long currentDimensionValueB = mapB.get(dimension);
-            sum += Math.pow((currentDimensionValueB - currentDimensionValueA), 2) * (dimension.getWeight() / sumWeight);
+            sum += Math.pow((currentDimensionValueB - currentDimensionValueA), 2) * dimension.getWeight();
         }
 
         return Math.sqrt(sum);
 
     }
+    public static Double calculateTotalCost(HyperDimensionPoint current, Collection<HyperDimensionPoint> others)
+    {
+        return others.parallelStream().mapToDouble(p-> pointDistance(p,current)).sum();
+    }
+
 }

@@ -91,6 +91,10 @@ public abstract class Document {
                     continue;
                 }
 
+                if(word.length()<5){
+                    continue;
+                }
+
                 stemmer.setCurrent(word);
                 stemmer.stem();
                 String stemedWord = stemmer.getCurrent();

@@ -15,7 +15,7 @@ public class HyperDimensionPoint {
         return dimensionValueMap;
     }
 
-    protected void setDimensionValueMap(DimensionValueMap dimensionValueMap) {
+    public void setDimensionValueMap(DimensionValueMap dimensionValueMap) {
         this.dimensionValueMap = dimensionValueMap;
     }
 

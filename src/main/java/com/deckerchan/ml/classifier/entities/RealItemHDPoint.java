@@ -7,7 +7,7 @@ import java.util.Collection;
 public class RealItemHDPoint<E> extends HyperDimensionPoint {
     private E source;
 
-    public RealItemHDPoint(DimensionValueMap dimensionValueMap, E source) {
+    public RealItemHDPoint(E source,DimensionValueMap dimensionValueMap ) {
         super(dimensionValueMap);
         this.source = source;
     }
@@ -17,7 +17,14 @@ public class RealItemHDPoint<E> extends HyperDimensionPoint {
     }
 
 
-    public <T extends HyperDimensionPoint> T chooseNearestPoint(Collection<T> alternativePoints) {
+    @Override
+    public void setDimensionValueMap(DimensionValueMap dimensionValueMap) {
+        throw new UnsupportedOperationException("You can not change dimension value map for real item point.");
+    }
+
+    public Cluster chooseNearestClusterPoint(Collection<Cluster> alternativePoints) {
         return alternativePoints.stream().min((p1, p2) -> Double.compare(PointUtils.pointDistance(this, p1), PointUtils.pointDistance(this, p2))).get();
     }
+
+
 }
