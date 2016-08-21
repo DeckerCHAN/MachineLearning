@@ -17,8 +17,7 @@ public final class KMedoidsClassifier extends KClassifierBase {
 
     @Override
     protected void doBalance() {
-        for (Cluster cluster :
-                this.getClusters()) {
+        for (Cluster cluster : this.getClusters()) {
             cluster.setDimensionValueMap(
                     cluster
                             .getRelatedPointWithDistance()
@@ -26,7 +25,6 @@ public final class KMedoidsClassifier extends KClassifierBase {
                             .min(
                                     (p1, p2) ->
                                     {
-                                        out.printf("Comparing %s and %s%n", p1.toString(), p2.toString());
                                         return Double.compare(
                                                 PointUtils.calculateTotalCost(p1, cluster.getRelatedPointWithDistance().keySet()),
                                                 PointUtils.calculateTotalCost(p2, cluster.getRelatedPointWithDistance().keySet())

@@ -57,23 +57,49 @@ public class WordFrequencyTable extends Hashtable<String, Long> {
 
     }
 
+    public synchronized WordFrequencyTable mergeTable(Map<String, Long> table) {
+        for (Map.Entry<String, Long> entry : table.entrySet()) {
+            this.occure(entry.getKey(), entry.getValue());
+        }
+
+        return this;
+
+    }
+
     public synchronized LinkedHashMap<String, Long> getSortedTableOrderByValue() {
 
 
         return this.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue((o1, o2) -> {
-                    if (o1 < o2) {
-                        return 1;
-                    } else if (o1 > o2) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                }))
+                .sorted(getComparatpr())
                 .collect(LinkedHashMap<String, Long>::new,
                         (stringLongLinkedHashMap, stringLongEntry) -> stringLongLinkedHashMap.put(stringLongEntry.getKey(),
                                 stringLongEntry.getValue()),
                         HashMap::putAll);
+    }
+
+    public synchronized LinkedHashMap<String, Long> getSortedTableOrderByValue(int top) {
+
+
+        return this.entrySet().stream()
+                .sorted(getComparatpr()).limit(top)
+                .collect(LinkedHashMap<String, Long>::new,
+                        (stringLongLinkedHashMap, stringLongEntry) -> stringLongLinkedHashMap.put(stringLongEntry.getKey(),
+                                stringLongEntry.getValue()),
+                        HashMap::putAll);
+    }
+
+    private static Comparator<Map.Entry<String, Long>> getComparatpr() {
+        return (o1, o2) -> {
+            if (o1.getValue() < o2.getValue()) {
+                return 1;
+            } else if (o1.getValue() > o2.getValue()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        };
+
+
     }
 
 

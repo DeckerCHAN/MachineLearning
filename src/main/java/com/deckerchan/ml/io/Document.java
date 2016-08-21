@@ -91,7 +91,7 @@ public abstract class Document {
                     continue;
                 }
 
-                if(word.length()<5){
+                if(word.length()<3){
                     continue;
                 }
 
@@ -99,7 +99,7 @@ public abstract class Document {
                 stemmer.stem();
                 String stemedWord = stemmer.getCurrent();
 
-                this.wordFrequencyTable.occure(stemedWord);
+                this.wordFrequencyTable.occure(word);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);

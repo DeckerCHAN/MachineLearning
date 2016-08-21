@@ -26,5 +26,11 @@ public class RealItemHDPoint<E> extends HyperDimensionPoint {
         return alternativePoints.stream().min((p1, p2) -> Double.compare(PointUtils.pointDistance(this, p1), PointUtils.pointDistance(this, p2))).get();
     }
 
+    @Override
+    public String toString() {
+        return String.format("The real item %d point for %s.%n", System.identityHashCode(this), this.source);
+    }
+
+
 
 }

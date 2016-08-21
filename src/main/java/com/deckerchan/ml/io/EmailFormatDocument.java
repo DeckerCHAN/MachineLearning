@@ -58,4 +58,10 @@ public class EmailFormatDocument extends Document {
 
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("The document %s.%n", System.identityHashCode(this), this.getTitle());
+    }
+
 }

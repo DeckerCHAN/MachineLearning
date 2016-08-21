@@ -2,7 +2,7 @@ package com.deckerchan.ml.classifier.entities;
 
 import com.deckerchan.ml.classifier.utils.PointUtils;
 
-public class HyperDimensionPoint {
+public class HyperDimensionPoint extends Object {
 
 
     private DimensionValueMap dimensionValueMap;

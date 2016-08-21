@@ -2,6 +2,7 @@ package com.deckerchan.ml.classifier.entities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public final class Cluster extends HyperDimensionPoint {
 
@@ -18,11 +19,13 @@ public final class Cluster extends HyperDimensionPoint {
 
     public Cluster(DimensionValueMap dimensionValueMap) {
         super(dimensionValueMap);
-        this.relatedPointWithDistance =new HashMap<>();
+        this.relatedPointWithDistance = new HashMap<>();
     }
 
     @Override
     public String toString() {
         return String.format("The cluster %d contains related points %d.%n", System.identityHashCode(this), this.relatedPointWithDistance.size());
     }
+
+
 }
