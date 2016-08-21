@@ -3,10 +3,11 @@ package com.deckerchan.ml.classifier.entities;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public final class DimensionValueMap extends HashMap<Dimension, Double> {
+public final class Coordinate extends HashMap<Dimension, Double> {
 
-    public DimensionValueMap(Collection<Dimension> dimensions) {
+    public Coordinate(Collection<Dimension> dimensions) {
         dimensions.stream().forEach(dimension -> super.put(dimension, 0D));
     }
 
@@ -30,6 +31,10 @@ public final class DimensionValueMap extends HashMap<Dimension, Double> {
         if (this.entrySet().stream().anyMatch(dimensionValueEntry -> dimensionValueEntry.getKey().getDimensionName().equals(dimensionName))) {
             this.entrySet().stream().filter(dimensionValueEntry -> dimensionValueEntry.getKey().getDimensionName().equals(dimensionName)).forEach(dimensionValueEntry -> dimensionValueEntry.setValue(value));
         }
+    }
+
+    public Set<Dimension> getDimensions(){
+        return this.keySet();
     }
 
 }

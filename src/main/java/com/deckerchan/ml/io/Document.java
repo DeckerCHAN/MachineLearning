@@ -1,23 +1,26 @@
 package com.deckerchan.ml.io;
 
-import com.deckerchan.ml.classifier.entities.WordFrequencyTable;
+import com.deckerchan.ml.classifier.entities.WordFrequencyBasedValueTable;
+import com.deckerchan.ml.classifier.utils.LongStopWordList;
+import com.deckerchan.ml.classifier.utils.TokenlizerUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.tartarus.snowball.ext.PorterStemmer;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public abstract class Document {
 
     private String documentText;
     private String title;
     private String content;
-    private WordFrequencyTable wordFrequencyTable;
+    private WordFrequencyBasedValueTable wordFrequencyBasedValueTable;
     private Path filePath;
 
     public Document(Path filePath) {
-        this.wordFrequencyTable = new WordFrequencyTable();
+        this.wordFrequencyBasedValueTable = new WordFrequencyBasedValueTable();
         this.filePath = filePath;
 
     }
@@ -59,11 +62,11 @@ public abstract class Document {
         return this.filePath.getFileName().toString();
     }
 
-    public WordFrequencyTable getWordFrequencyTable() {
-        if (this.wordFrequencyTable == null) {
+    public WordFrequencyBasedValueTable getWordFrequencyBasedValueTable() {
+        if (this.wordFrequencyBasedValueTable == null) {
             this.calculateWordFrequencyTable();
         }
-        return this.wordFrequencyTable;
+        return this.wordFrequencyBasedValueTable;
     }
 
     public abstract void resolveDocument();
@@ -74,11 +77,17 @@ public abstract class Document {
             this.resolveDocument();
 
             PorterStemmer stemmer = new PorterStemmer();
-            this.wordFrequencyTable = new WordFrequencyTable();
+            this.wordFrequencyBasedValueTable = new WordFrequencyBasedValueTable();
 
-            String[] words = this.getContent().split("[\\p{Punct}\\s]+");
+            List<String> words = TokenlizerUtils.removeOverLengthWords(TokenlizerUtils.removeStopWords(TokenlizerUtils.removeNumber(TokenlizerUtils.tokenlize(this.content))));
 
             for (String word : words) {
+
+
+                this.wordFrequencyBasedValueTable.occure(word, Math.pow(word.length(), 2) / (double) words.size());
+            }
+
+            for (String word : TokenlizerUtils.removeStopWords(TokenlizerUtils.tokenlize(this.getTitle()))) {
 
                 word = word.toLowerCase();
 
@@ -87,20 +96,13 @@ public abstract class Document {
                     continue;
                 }
 
-                if (org.apache.lucene.analysis.en.EnglishAnalyzer.getDefaultStopSet().contains(word)) {
+                if (LongStopWordList.getStopWordList().contains(word)) {
                     continue;
                 }
 
-                if(word.length()<3){
-                    continue;
-                }
-
-                stemmer.setCurrent(word);
-                stemmer.stem();
-                String stemedWord = stemmer.getCurrent();
-
-                this.wordFrequencyTable.occure(word);
+                this.wordFrequencyBasedValueTable.occure(word, 3D);
             }
+
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

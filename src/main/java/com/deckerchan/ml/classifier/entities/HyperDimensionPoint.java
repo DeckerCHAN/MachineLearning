@@ -5,22 +5,26 @@ import com.deckerchan.ml.classifier.utils.PointUtils;
 public class HyperDimensionPoint extends Object {
 
 
-    private DimensionValueMap dimensionValueMap;
+    private Coordinate coordinate;
 
-    public HyperDimensionPoint(DimensionValueMap dimensionValueMap) {
-        this.dimensionValueMap = dimensionValueMap;
+    public HyperDimensionPoint(Coordinate coordinate) {
+        this.coordinate = coordinate;
     }
 
-    public DimensionValueMap getDimensionValueMap() {
-        return dimensionValueMap;
+    public Coordinate getCoordinate() {
+        return coordinate;
     }
 
-    public void setDimensionValueMap(DimensionValueMap dimensionValueMap) {
-        this.dimensionValueMap = dimensionValueMap;
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
     }
 
     public double getDistanceFrom(HyperDimensionPoint point) {
         return PointUtils.pointDistance(this, point);
     }
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

@@ -6,8 +6,6 @@ import com.deckerchan.ml.classifier.utils.PointUtils;
 
 import java.util.List;
 
-import static java.lang.System.out;
-
 public final class KMedoidsClassifier extends KClassifierBase {
 
 
@@ -18,19 +16,17 @@ public final class KMedoidsClassifier extends KClassifierBase {
     @Override
     protected void doBalance() {
         for (Cluster cluster : this.getClusters()) {
-            cluster.setDimensionValueMap(
+            cluster.setCoordinate(
                     cluster
-                            .getRelatedPointWithDistance()
-                            .keySet().parallelStream()
+                            .getRelatedPointList()
+                            .parallelStream()
                             .min(
                                     (p1, p2) ->
-                                    {
-                                        return Double.compare(
-                                                PointUtils.calculateTotalCost(p1, cluster.getRelatedPointWithDistance().keySet()),
-                                                PointUtils.calculateTotalCost(p2, cluster.getRelatedPointWithDistance().keySet())
-                                        );
-                                    })
-                            .get().getDimensionValueMap()
+                                            Double.compare(
+                                                    PointUtils.calculateTotalCost(p1, cluster.getRelatedPointList()),
+                                                    PointUtils.calculateTotalCost(p2, cluster.getRelatedPointList())
+                                            ))
+                            .get().getCoordinate()
             );
         }
     }

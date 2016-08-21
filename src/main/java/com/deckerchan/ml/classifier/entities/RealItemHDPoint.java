@@ -7,8 +7,8 @@ import java.util.Collection;
 public class RealItemHDPoint<E> extends HyperDimensionPoint {
     private E source;
 
-    public RealItemHDPoint(E source,DimensionValueMap dimensionValueMap ) {
-        super(dimensionValueMap);
+    public RealItemHDPoint(E source,Coordinate coordinate) {
+        super(coordinate);
         this.source = source;
     }
 
@@ -18,7 +18,7 @@ public class RealItemHDPoint<E> extends HyperDimensionPoint {
 
 
     @Override
-    public void setDimensionValueMap(DimensionValueMap dimensionValueMap) {
+    public void setCoordinate(Coordinate coordinate) {
         throw new UnsupportedOperationException("You can not change dimension value map for real item point.");
     }
 
@@ -28,7 +28,7 @@ public class RealItemHDPoint<E> extends HyperDimensionPoint {
 
     @Override
     public String toString() {
-        return String.format("The real item %d point for %s.%n", System.identityHashCode(this), this.source);
+        return String.format("The real item %d point for -> %s.", System.identityHashCode(this), this.source);
     }
 
 

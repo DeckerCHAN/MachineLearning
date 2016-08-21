@@ -1,9 +1,7 @@
 package com.deckerchan.ml.classifier.k;
 
 import com.deckerchan.ml.classifier.entities.Cluster;
-import com.deckerchan.ml.classifier.entities.DimensionValueMap;
 import com.deckerchan.ml.classifier.entities.RealItemHDPoint;
-import com.deckerchan.ml.classifier.utils.PointUtils;
 import com.deckerchan.ml.classifier.utils.RandomUtils;
 
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public abstract class KClassifierBase {
         out.println("Using index for initiallize cluster:");
         randomIndexSet.stream().forEach(out::println);
         out.println();
-        this.clusters = randomIndexSet.stream().map(index -> new Cluster(this.itemPoints.get(index).getDimensionValueMap())).collect(Collectors.toList());
+        this.clusters = randomIndexSet.stream().map(index -> new Cluster(this.itemPoints.get(index).getCoordinate())).collect(Collectors.toList());
     }
 
     public int getkValue() {
@@ -62,12 +60,12 @@ public abstract class KClassifierBase {
 
     protected void doClassify() {
 
-        this.clusters.parallelStream().forEach(e -> e.getRelatedPointWithDistance().clear());
+        this.clusters.parallelStream().forEach(e -> e.getRelatedPointList().clear());
 
         for (RealItemHDPoint itemPoint :
                 this.getItemPoints()) {
             Cluster nearClusterPoint = itemPoint.chooseNearestClusterPoint(this.clusters);
-            nearClusterPoint.getRelatedPointWithDistance().put(itemPoint, PointUtils.pointDistance(nearClusterPoint, itemPoint));
+            nearClusterPoint.getRelatedPointList().add(itemPoint);
 
         }
 
@@ -76,10 +74,10 @@ public abstract class KClassifierBase {
     protected abstract void doBalance();
 
     protected boolean isStablized() {
-        if (this.clusters.stream().map(cluster -> cluster.getDimensionValueMap().hashCode()).collect(Collectors.toList()).equals(this.lastClustersHashCode)) {
+        if (this.clusters.stream().map(cluster -> cluster.getCoordinate().hashCode()).collect(Collectors.toList()).equals(this.lastClustersHashCode)) {
             return true;
         } else {
-            this.lastClustersHashCode = this.clusters.stream().map(cluster -> cluster.getDimensionValueMap().hashCode()).collect(Collectors.toList());
+            this.lastClustersHashCode = this.clusters.stream().map(cluster -> cluster.getCoordinate().hashCode()).collect(Collectors.toList());
             return false;
         }
     }
@@ -90,7 +88,9 @@ public abstract class KClassifierBase {
             out.printf("Attempt %d:%n", attempt);
             this.doClassify();
             out.printf("Classified %d clusters%n", this.clusters.size());
-            this.clusters.stream().forEach(out::println);
+            this.clusters.stream().forEach(cluster -> {
+                out.printf("Cluster has %d related points%n", cluster.getRelatedPointList().size());
+            });
             this.doBalance();
         }
 

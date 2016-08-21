@@ -1,30 +1,45 @@
 package com.deckerchan.ml.classifier.entities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class Cluster extends HyperDimensionPoint {
 
+    private List<HyperDimensionPoint> relatedPointList;
+
+
+    public Cluster(Coordinate coordinate) {
+        super(coordinate);
+        this.relatedPointList = new ArrayList<>();
+    }
+
     public Map<HyperDimensionPoint, Double> getRelatedPointWithDistance() {
-        return relatedPointWithDistance;
+        Map<HyperDimensionPoint, Double> map = new HashMap<>();
+        this.relatedPointList.stream().forEach(hyperDimensionPoint -> map.put(hyperDimensionPoint, hyperDimensionPoint.getDistanceFrom(this)));
+        return map;
     }
 
-    private void setRelatedPointWithDistance(Map<HyperDimensionPoint, Double> relatedPointWithDistance) {
-        this.relatedPointWithDistance = relatedPointWithDistance;
+    public List<HyperDimensionPoint> getRelatedPointList() {
+        return relatedPointList;
     }
 
-    private Map<HyperDimensionPoint, Double> relatedPointWithDistance;
-
-
-    public Cluster(DimensionValueMap dimensionValueMap) {
-        super(dimensionValueMap);
-        this.relatedPointWithDistance = new HashMap<>();
+    private void setRelatedPointList(List<HyperDimensionPoint> relatedPointList) {
+        this.relatedPointList = relatedPointList;
     }
 
     @Override
     public String toString() {
-        return String.format("The cluster %d contains related points %d.%n", System.identityHashCode(this), this.relatedPointWithDistance.size());
+        StringBuilder res = new StringBuilder();
+        res.append(String.format("The cluster %d contains related points %d.%n", System.identityHashCode(this), this.relatedPointList.size()));
+        Map<HyperDimensionPoint, Double> pd = this.getRelatedPointWithDistance();
+
+        for (Map.Entry<HyperDimensionPoint, Double> entry : pd.entrySet()) {
+            res.append(String.format("[Dis:%f]%s%n", entry.getValue(), entry.getKey().toString()));
+        }
+
+        return res.toString();
     }
 
 

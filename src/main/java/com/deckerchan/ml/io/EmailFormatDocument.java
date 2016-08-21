@@ -61,7 +61,7 @@ public class EmailFormatDocument extends Document {
 
     @Override
     public String toString() {
-        return String.format("The document %s.%n", System.identityHashCode(this), this.getTitle());
+        return String.format("The email document %d with title %s, path %s", System.identityHashCode(this), this.getTitle(), this.getFilePath());
     }
 
 }
