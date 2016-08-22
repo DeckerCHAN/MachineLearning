@@ -96,17 +96,16 @@ public abstract class KClassifierBase {
 
     }
 
-    public String report() {
+    public void report() {
         if (!this.isStablized()) {
-            return "Unestablished classify. N/A report.";
+            System.out.println("Unestablished classify. N/A report.");
         } else {
             out.println("Clusters are stabilized!");
             StringBuilder report = new StringBuilder();
 
             for (Cluster cluster : this.clusters) {
-                report.append(cluster.toString());
+                cluster.report(5);
             }
-            return report.toString();
         }
 
     }

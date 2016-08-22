@@ -42,5 +42,13 @@ public final class Cluster extends HyperDimensionPoint {
         return res.toString();
     }
 
+    public void report(Integer top) {
+        Map<HyperDimensionPoint, Double> pointWithDistance = this.getRelatedPointWithDistance();
+        System.out.printf("Cluster %d has %d related points %n", System.identityHashCode(this), this.relatedPointList.size());
+        pointWithDistance.entrySet().stream().sorted((o1, o2) -> Double.compare(o1.getValue(), o2.getValue())).limit(top).forEachOrdered(hyperDimensionPointDoubleEntry -> {
+            System.out.printf("    The point %s with distance %f %n", hyperDimensionPointDoubleEntry.getKey().toString(), hyperDimensionPointDoubleEntry.getValue());
+        });
+    }
+
 
 }

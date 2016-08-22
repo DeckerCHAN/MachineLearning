@@ -42,8 +42,7 @@ public class WordFrequencyBasedValueTable extends Hashtable<String, Double> {
     }
 
 
-    public synchronized void accumulate(String word, Double value)
-    {
+    public synchronized void accumulate(String word, Double value) {
         if (this.containsKey(word)) {
             this.put(word, this.get(word) + value);
         } else {
@@ -89,6 +88,10 @@ public class WordFrequencyBasedValueTable extends Hashtable<String, Double> {
                         (stringLongLinkedHashMap, stringLongEntry) -> stringLongLinkedHashMap.put(stringLongEntry.getKey(),
                                 stringLongEntry.getValue()),
                         HashMap::putAll);
+    }
+
+    public synchronized Set<String> getWords() {
+        return this.keySet();
     }
 
 

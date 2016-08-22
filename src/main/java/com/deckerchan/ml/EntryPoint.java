@@ -4,7 +4,9 @@ import com.deckerchan.ml.classifier.entities.*;
 import com.deckerchan.ml.classifier.k.KClassifierBase;
 import com.deckerchan.ml.classifier.k.KMeansClassifier;
 import com.deckerchan.ml.classifier.k.KMedoidsClassifier;
+import com.deckerchan.ml.io.Document;
 import com.deckerchan.ml.io.EmailFormatDocument;
+import com.deckerchan.ml.io.PureTextDocument;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,20 +20,20 @@ public class EntryPoint {
     public static void main(String[] args) throws Exception {
 
 
-        ArrayList<EmailFormatDocument> documents = Files
+        ArrayList<PureTextDocument> documents = Files
                 .walk(Paths.get(args[0]))
                 .filter(Files::isRegularFile)
-                .map(EmailFormatDocument::new)
-                .collect(Collectors.toCollection(ArrayList<EmailFormatDocument>::new));
+                .map(PureTextDocument::new)
+                .collect(Collectors.toCollection(ArrayList<PureTextDocument>::new));
 
-        documents.parallelStream().forEach(EmailFormatDocument::calculateWordFrequencyTable);
+        documents.parallelStream().forEach(Document::calculateWordFrequencyTable);
 
         //Get total word frequency table
 
         WordFrequencyBasedValueTable totalTable = new WordFrequencyBasedValueTable();
         totalTable.mergeTable(documents.stream()
-                .map(EmailFormatDocument::getWordFrequencyBasedValueTable)
-                .reduce(new WordFrequencyBasedValueTable(), WordFrequencyBasedValueTable::mergeTable).getSortedTableOrderByValue(200));
+                .map(Document::getWordFrequencyBasedValueTable)
+                .reduce(new WordFrequencyBasedValueTable(), WordFrequencyBasedValueTable::mergeTable).getSortedTableOrderByValue(400));
 
 
         List<Dimension> dimensionList = totalTable
@@ -54,11 +56,11 @@ public class EntryPoint {
                 })
                 .collect(Collectors.toList());
 
-        KClassifierBase classifier = new KMedoidsClassifier(11, documentPoints);
+        KClassifierBase classifier = new KMeansClassifier(Integer.valueOf(args[1]), documentPoints);
 
         classifier.calculate(50);
 
-        out.println(classifier.report());
+        classifier.report();
 
 
 
