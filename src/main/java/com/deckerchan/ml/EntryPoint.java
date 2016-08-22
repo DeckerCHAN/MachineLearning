@@ -1,13 +1,16 @@
 package com.deckerchan.ml;
 
-import com.deckerchan.ml.classifier.entities.*;
+import com.deckerchan.ml.classifier.entities.Coordinate;
+import com.deckerchan.ml.classifier.entities.Dimension;
+import com.deckerchan.ml.classifier.entities.RealItemHDPoint;
+import com.deckerchan.ml.classifier.entities.WordFrequencyBasedValueTable;
 import com.deckerchan.ml.classifier.k.KClassifierBase;
 import com.deckerchan.ml.classifier.k.KMeansClassifier;
-import com.deckerchan.ml.classifier.k.KMedoidsClassifier;
 import com.deckerchan.ml.io.Document;
 import com.deckerchan.ml.io.EmailFormatDocument;
 import com.deckerchan.ml.io.PureTextDocument;
 
+import javax.print.Doc;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,11 +23,11 @@ public class EntryPoint {
     public static void main(String[] args) throws Exception {
 
 
-        ArrayList<PureTextDocument> documents = Files
+        ArrayList<Document> documents = Files
                 .walk(Paths.get(args[0]))
                 .filter(Files::isRegularFile)
-                .map(PureTextDocument::new)
-                .collect(Collectors.toCollection(ArrayList<PureTextDocument>::new));
+                .map(EmailFormatDocument::new)
+                .collect(Collectors.toCollection(ArrayList<Document>::new));
 
         documents.parallelStream().forEach(Document::calculateWordFrequencyTable);
 
@@ -36,6 +39,15 @@ public class EntryPoint {
                 .reduce(new WordFrequencyBasedValueTable(), WordFrequencyBasedValueTable::mergeTable).getSortedTableOrderByValue(400));
 
 
+        //idf
+        for (String word : totalTable.getWords()) {
+            Long df = documents.stream().filter(document -> document.getWordFrequencyBasedValueTable().contains(word)).count();
+            int totoalDocumentNumner = documents.size();
+            Double idf = Math.log10(totoalDocumentNumner / df);
+            documents.stream().filter(document -> document.getWordFrequencyBasedValueTable().getWords().contains(word))
+                    .forEach(newDoc -> newDoc.getWordFrequencyBasedValueTable().put(word,newDoc.getWordFrequencyBasedValueTable().get(word)*idf));
+        }
+
         List<Dimension> dimensionList = totalTable
                 .entrySet().parallelStream()
                 .map(stringLongEntry -> new Dimension(stringLongEntry.getKey()))
@@ -43,16 +55,16 @@ public class EntryPoint {
 
 
         List<RealItemHDPoint> documentPoints = documents.parallelStream()
-                .map(emailFormatDocument -> {
+                .map(document -> {
                     Coordinate initialDimensionMap = new Coordinate(dimensionList);
 
 
-                    for (String word : emailFormatDocument.getWordFrequencyBasedValueTable().keySet()) {
-                        initialDimensionMap.set(word, emailFormatDocument.getWordFrequencyBasedValueTable().get(word));
+                    for (String word : document.getWordFrequencyBasedValueTable().keySet()) {
+                        initialDimensionMap.set(word, document.getWordFrequencyBasedValueTable().get(word));
                     }
 
-                    out.printf("Finish build hyper point for document %s%n", emailFormatDocument.getFileName());
-                    return new RealItemHDPoint<>(emailFormatDocument, initialDimensionMap);
+                    out.printf("Finish build hyper point for document %s%n", document.getFileName());
+                    return new RealItemHDPoint<>(document, initialDimensionMap);
                 })
                 .collect(Collectors.toList());
 
@@ -61,8 +73,6 @@ public class EntryPoint {
         classifier.calculate(50);
 
         classifier.report();
-
-
 
 
         System.exit(0);
