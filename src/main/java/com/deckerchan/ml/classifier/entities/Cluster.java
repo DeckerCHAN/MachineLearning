@@ -17,7 +17,7 @@ public final class Cluster extends HyperDimensionPoint {
 
     public Map<HyperDimensionPoint, Double> getRelatedPointWithDistance() {
         Map<HyperDimensionPoint, Double> map = new HashMap<>();
-        this.relatedPointList.stream().forEach(hyperDimensionPoint -> map.put(hyperDimensionPoint, hyperDimensionPoint.getDistanceFrom(this)));
+        this.relatedPointList.forEach(hyperDimensionPoint -> map.put(hyperDimensionPoint, hyperDimensionPoint.getDistanceFrom(this)));
         return map;
     }
 
