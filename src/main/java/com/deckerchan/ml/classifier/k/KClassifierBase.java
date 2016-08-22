@@ -104,7 +104,7 @@ public abstract class KClassifierBase {
             StringBuilder report = new StringBuilder();
 
             for (Cluster cluster : this.clusters) {
-                cluster.report(5);
+                cluster.report(10);
             }
         }
 
