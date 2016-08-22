@@ -74,7 +74,7 @@ public class EntryPoint {
                 })
                 .collect(Collectors.toList());
 
-        KClassifierBase classifier = new KMedoidsClassifier(Integer.valueOf(args[1]), documentPoints);
+        KClassifierBase classifier = new KMeansClassifier(Integer.valueOf(args[1]), documentPoints);
 
         classifier.calculate(50);
 
