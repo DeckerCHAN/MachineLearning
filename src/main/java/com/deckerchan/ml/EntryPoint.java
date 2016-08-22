@@ -8,9 +8,7 @@ import com.deckerchan.ml.classifier.k.KClassifierBase;
 import com.deckerchan.ml.classifier.k.KMeansClassifier;
 import com.deckerchan.ml.io.Document;
 import com.deckerchan.ml.io.EmailFormatDocument;
-import com.deckerchan.ml.io.PureTextDocument;
 
-import javax.print.Doc;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,11 +39,18 @@ public class EntryPoint {
 
         //idf
         for (String word : totalTable.getWords()) {
-            Long df = documents.stream().filter(document -> document.getWordFrequencyBasedValueTable().contains(word)).count();
+            Long df = 0L;
+
+            for (Document doc : documents) {
+                if(doc.getWordFrequencyBasedValueTable().getWords().contains(word)){
+                    df++;
+                }
+            }
+
             int totoalDocumentNumner = documents.size();
             Double idf = Math.log10(totoalDocumentNumner / df);
             documents.stream().filter(document -> document.getWordFrequencyBasedValueTable().getWords().contains(word))
-                    .forEach(newDoc -> newDoc.getWordFrequencyBasedValueTable().put(word,newDoc.getWordFrequencyBasedValueTable().get(word)*idf));
+                    .forEach(newDoc -> newDoc.getWordFrequencyBasedValueTable().put(word, newDoc.getWordFrequencyBasedValueTable().get(word) * idf));
         }
 
         List<Dimension> dimensionList = totalTable
