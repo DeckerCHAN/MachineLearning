@@ -23,7 +23,7 @@ public class RealItemHDPoint<E> extends HyperDimensionPoint {
     }
 
     public Cluster chooseNearestClusterPoint(Collection<Cluster> alternativePoints) {
-        return alternativePoints.stream().min((p1, p2) -> Double.compare(PointUtils.pointDistance(this, p1), PointUtils.pointDistance(this, p2))).get();
+        return alternativePoints.stream().min((p1, p2) -> Double.compare(PointUtils.cosineSimilarity(this, p1), PointUtils.cosineSimilarity(this, p2))).get();
     }
 
     @Override

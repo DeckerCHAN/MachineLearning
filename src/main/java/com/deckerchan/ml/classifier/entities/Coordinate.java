@@ -8,7 +8,7 @@ import java.util.Set;
 public final class Coordinate extends HashMap<Dimension, Double> {
 
     public Coordinate(Collection<Dimension> dimensions) {
-        dimensions.stream().forEach(dimension -> super.put(dimension, 0D));
+        dimensions.forEach(dimension -> super.put(dimension, 0D));
     }
 
     @Override

@@ -84,7 +84,7 @@ public abstract class Document {
             for (String word : words) {
 
 
-                this.wordFrequencyBasedValueTable.occure(word, Math.pow(word.length(), 2) / (double) words.size());
+                this.wordFrequencyBasedValueTable.occure(word, 1D);
             }
 
             for (String word : TokenlizerUtils.removeStopWords(TokenlizerUtils.tokenlize(this.getTitle()))) {

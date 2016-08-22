@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Set;
 
 public class PointUtils {
-    public static Double pointDistance(HyperDimensionPoint pointA, HyperDimensionPoint pointB) {
+    public static Double eulaDistance(HyperDimensionPoint pointA, HyperDimensionPoint pointB) {
         Coordinate mapA = pointA.getCoordinate();
         Coordinate mapB = pointB.getCoordinate();
 
@@ -35,6 +35,19 @@ public class PointUtils {
 
     public static Double calculateTotalCost(HyperDimensionPoint current, Collection<HyperDimensionPoint> others) {
         return others.parallelStream().mapToDouble(current::getDistanceFrom).sum();
+    }
+
+    public static double cosineSimilarity(HyperDimensionPoint pointA, HyperDimensionPoint PointB) {
+        double dotProduct = 0.0;
+        double normA = 0.0;
+        double normB = 0.0;
+        for (Dimension dimension : pointA.getCoordinate().getDimensions()) {
+            dotProduct += pointA.getCoordinate().get(dimension) * PointB.getCoordinate().get(dimension);
+            normA += Math.pow(pointA.getCoordinate().get(dimension), 2);
+            normB += Math.pow(PointB.getCoordinate().get(dimension), 2);
+        }
+
+        return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
     }
 
 }

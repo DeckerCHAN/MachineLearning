@@ -20,7 +20,7 @@ public class HyperDimensionPoint extends Object {
     }
 
     public double getDistanceFrom(HyperDimensionPoint point) {
-        return PointUtils.pointDistance(this, point);
+        return PointUtils.cosineSimilarity(this, point);
     }
 
     @Override
